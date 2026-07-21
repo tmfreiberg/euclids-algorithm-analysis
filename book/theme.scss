@@ -1,0 +1,63 @@
+/*-- scss:defaults --*/
+// A restrained, readable theme: warm paper background, deep-teal accents,
+// and a serif body for the mathematical exposition.
+
+$font-family-serif: Georgia, "Iowan Old Style", "Palatino Linotype", serif !default;
+$font-family-sans-serif: "Helvetica Neue", Arial, sans-serif !default;
+$font-family-base: $font-family-serif !default;
+
+$body-color: #22282b !default;
+$link-color: #0f6e6e !default;
+$primary: #0f6e6e !default;
+
+/*-- scss:rules --*/
+body {
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, .sidebar-title {
+  font-family: $font-family-sans-serif;
+  letter-spacing: -0.01em;
+}
+
+// Give displayed images and animations room to breathe and a subtle frame.
+.quarto-figure img,
+p img {
+  max-width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+}
+
+// Theorem/definition rules (the exposition uses --- around boxed results).
+hr {
+  border: none;
+  border-top: 1px solid #d7dcdd;
+  margin: 1.4rem 0;
+}
+
+// Code cells: monospace, slightly inset.
+div.sourceCode {
+  border-radius: 6px;
+}
+
+// Keep inline math from crowding the line.
+mjx-container {
+  margin: 0 0.05em;
+}
+
+.named {
+  margin: 1.1rem 0;
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid $primary;      // teal accent, ties into your palette
+  background: rgba(15, 110, 110, 0.04);
+  border-radius: 0 4px 4px 0;
+}
+.named > p:first-child > strong:first-child {
+  color: $primary;                       // make the lead-in title pop
+}
+
+.theorem-title strong::after {
+  content: ".";
+}
+

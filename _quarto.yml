@@ -1,0 +1,56 @@
+project:
+  type: book
+  output-dir: _book
+  resources:
+    - images/
+
+book:
+  title: "An Analysis of Euclid's Algorithm"
+  author: "Tristan Freiberg"
+  search: true
+  reader-mode: true
+  page-navigation: true
+  repo-url: https://github.com/tmfreiberg/euclids_algorithm_analysis
+  repo-actions: [source, issue]
+  sidebar:
+    style: docked
+    collapse-level: 1
+  chapters:
+    - index.qmd
+    - book/01-euclid.qmd
+    - book/02-worst-case.qmd
+    - book/03-constants.qmd
+    - book/04-one-dimensional.qmd
+    - book/05-two-dimensional.qmd
+    - book/06-analysis-code.qmd
+    - book/07-data.qmd
+    - book/08-investigation.qmd
+    - book/09-references.qmd
+
+bibliography: book/references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - book/theme.scss
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    number-depth: 2
+    code-fold: false
+    code-tools: true
+    fig-align: center
+    html-math-method: mathjax
+
+# Execute code cells at render time so the exposition runs the actual package.
+# The slow animations are NOT executed here; their precomputed GIFs/PNGs from
+# images/ are embedded instead.
+execute:
+  freeze: auto
+  warning: false
+  message: false
+
+crossref:
+  chapters: true
+  eq-prefix: ""

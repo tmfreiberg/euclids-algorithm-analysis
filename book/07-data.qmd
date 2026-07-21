@@ -1,0 +1,11 @@
+# Generating and exporting/importing the raw data {#sec-raw-data}
+
+The raw data behind everything that follows is produced by the counting routines of the previous chapter and stored as CSV files, so that the expensive computation is done once rather than on every run. The generation lives in `src/euclid_analysis/frequencies.py`, and the saving and loading in `src/euclid_analysis/dataio.py`.
+
+The one-dimensional data is a single call to `heilbronn` over $a = 1, \ldots, 10^4$. On the machine used here that took about 201 seconds, some three and a half minutes.
+
+The two-dimensional data is a single call to `euclid_alg_frequencies` over all pairs $0 < b < a < N$, with $N$ running up to just past $10^5$ in steps of $1000$. This is the expensive part: it covers almost five billion pairs, and it took about 17,600 seconds, close to five hours. That is the kind of run one wants to do exactly once, which is why the data is generated, saved, and simply loaded from then on.
+
+The two-dimensional run yields three tables: the frequencies of each gcd value, and the frequencies of each step-count $T(a,b)$ in a coprime-restricted and an unrestricted version. The one-dimensional run yields the coprime-restricted and unrestricted step-count tables. `tabulate` turns each into a pandas DataFrame and `save_meta_dict` writes it to CSV; the five files are registered by name (`A`, `B`, `C`, `H1`, `H`) in `DATASETS`, under `DATA_DIR`.
+
+Reading the data back is a single call to `load_meta_dict`, or `load_dataset`, which looks a file up by its registered name. The CSV round-trip would otherwise leave the dictionary keys as strings and scatter the tables with empty cells; the loader casts the keys back to integers and drops the zero entries, so what comes back matches what was saved. From there, `basic_stats` and `dists` produce the relative-frequency distributions and summary statistics used in the next chapter.

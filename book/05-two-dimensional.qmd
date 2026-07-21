@@ -1,0 +1,175 @@
+# Two-dimensional analysis {#sec-2d-analysis}
+
+As already mentioned, averaging the number of divisions in the Euclidean algorithm over _both_ inputs allows us to prove much more than we can in the one-dimensional analysis. There are various equivalent ways to formulate results: let
+
+$$
+\begin{aligned}
+ U & = \{1,\ldots,N\} \times \{1,\ldots,N\} \\
+ U_{1} & = \{(a,b) \in U : \gcd(a,b) = 1\} \\
+ \Omega & = \{(a,b) \in U : a > b\} \\
+ \Omega_{1} & = \{(a,b) \in U_{1}: a > b\}
+\end{aligned}
+$$
+
+then define random variables
+
+$$
+Y : U \to \mathbb{N}, \quad Y_1 : U_1 \to \mathbb{N}, \quad X : \Omega \to \mathbb{N}, \quad X_1 : \Omega_1 \to \mathbb{N}
+$$
+
+by letting each be equal to $T$ restricted to its sample space ($Y(a,b) = T(a,b)$ for each $(a,b) \in U$, and so on), with $(a,b)$ being chosen uniformly at random from the sample space.
+
+## Average-case analysis {#sec-average-case}
+
+Thus, for instance,
+
+$$
+\mathbb{E}[Y] = \frac{1}{N^2} \sum_{1 \le a,b \le N} T(a,b)
+$$ {#eq-EY}
+
+is the average number of divisions performed by Euclid's algorithm, over all pairs $(a,b)$ satisfying $1 \le a,b \le N$. (We'll discuss the restriction $a > b$ shortly.) Knuth [@knuth1997] gave a heuristic suggesting $\mathbb{E}[Y] = \lambda\log N + O(1)$ ($\lambda$ as in (@eq-mu_dixon)), and numerical evidence suggesting the $O(1)$ is actually around $0.06$ plus a small error. This was first proved by Norton [@norton1990] (whose proof hinged on @thm-porter of Porter [@porter1975]).
+
+::: {#thm-norton}
+## Norton, 1990
+For all $N \ge 2$ and any $\epsilon > 0$,
+
+$$
+\mathbb{E}[Y] = \lambda \log N + \nu + O_{\epsilon}\left(N^{\epsilon - 1/6}\right),
+$$ {#eq-norton_thm}
+
+with $\lambda$ as in (@eq-mu_dixon) and $\nu$ as in (@eq-norton_constant).
+:::
+
+As one might expect, if @cnj-porter is true, the $O$-term in Norton's theorem can be replaced by $O_{\epsilon}\left(N^{\epsilon - 1/2}\right)$, and as we will see, the numerical evidence seems to support this.
+
+By Norton's result and the next proposition, the following estimates all hold and are in fact equivalent: for $N \ge 2$ and $\epsilon > 0$,
+
+$$
+\begin{aligned}
+ \mathbb{E}[Y] & = \lambda \log N + \nu + O_{\epsilon}\left(N^{\epsilon - 1/6}\right) \nonumber \\
+ \mathbb{E}[Y_1] & = \lambda \log N + \nu_1 + O_{\epsilon}\left(N^{\epsilon - 1/6}\right) \\
+ \mathbb{E}[X] & = \lambda \log N + \nu - {\textstyle \frac{1}{2}} + O_{\epsilon}\left(N^{\epsilon - 1/6}\right) \\
+ \mathbb{E}[X_1] & = \lambda \log N + \nu_1 - {\textstyle \frac{1}{2}} + O_{\epsilon}\left(N^{\epsilon - 1/6}\right)
+\end{aligned}
+$$ {#eq-EYequiv}
+
+with $\lambda$, $\nu$, and $\nu_1$ as in (@eq-mu_dixon) and (@eq-norton_constant), respectively. Again, we believe the $O$-term in all four estimates can be replaced by $O_{\epsilon}(N^{\epsilon - 1/2})$ (and if such an $O$-term holds for one estimate, it holds in all four).
+
+::: {#prp-ExpEquiv}
+\(a\) For $N \ge 2$ we have
+
+$$
+\begin{aligned}
+ \mathbb{E}[Y] = \mathbb{E}[X] + {\textstyle \frac{1}{2}} + O\left(N^{-1}\log N\right) \quad \text{and} \quad
+ \mathbb{E}[Y_1] = \mathbb{E}[X_1] + {\textstyle \frac{1}{2}} + O\left(N^{-1}\log N\right).
+\end{aligned}
+$$ {#eq-ExpEquiv_a}
+
+\(b\) The following statements are equivalent. \(i\) There exist constants $\lambda$ and $\nu_1$ such that, for $N \ge 2$ and $\epsilon > 0$,
+
+$$
+\mathbb{E}[Y_1] = \lambda \log N + \nu_1 + O_{\epsilon}\left(N^{\epsilon - 1/6}\right).
+$$
+
+\(ii\) There exist constants $\lambda$ and $\nu_1$ such that, for $N \ge 2$ and $\epsilon > 0$,
+
+$$
+\mathbb{E}[Y] = \lambda \log N + \nu_1 + \lambda\frac{\zeta'(2)}{\zeta(2)}+ O_{\epsilon}\left(N^{\epsilon - 1/6}\right).
+$$
+:::
+
+::: {.proof}
+\(a\) For the second equation in (@eq-ExpEquiv_a), note that
+
+$$
+\begin{aligned}
+ \#U_1 \mathbb{E}[Y_1] & = \sum_{(a,b) \in U_1} T(a,b) \\
+ & = \sum_{\substack{(a,b) \in U_1 \\ a > b}} T(a,b) + \sum_{\substack{(a,b) \in U_1 \\ b > a}} T(a,b) + \sum_{\substack{(a,b) \in U_1 \\ a = b}} T(a,b) \\
+ & = \sum_{\substack{(a,b) \in U_1 \\ a > b}} T(a,b) + \sum_{\substack{(a,b) \in U_1 \\ a > b}} T(b,a) + T(1,1) \\
+ & = \sum_{\substack{(a,b) \in U_1 \\ a > b}} T(a,b) + \sum_{\substack{(a,b) \in U_1 \\ a > b}} \left[T(a,b) + 1\right] + 1 \\
+ & = 2\sum_{\substack{(a,b) \in U_1 \\ a > b}} T(a,b) + \sum_{\substack{(a,b) \in U_1 \\ a > b}} 1 + 1 \\
+ & = 2\#\Omega_1 \mathbb{E}[X_1] + \#\Omega_1 + 1.
+\end{aligned}
+$$
+
+Since $\#U_1 = 2\#\Omega_1 + N$ (if this isn't clear, replace $T(a,b)$ by $1$ in the above equations), this gives
+
+$$
+\#U_1\mathbb{E}[Y_1] = \#U_1 \mathbb{E}[X_1] - N\mathbb{E}[X_1] + {\textstyle \frac{1}{2}} \left(\#U_1 - N\right) + 1,
+$$
+
+which upon dividing by $\#U_1$ becomes
+
+$$
+\mathbb{E}[Y_1] = \mathbb{E}[X_1] + {\textstyle \frac{1}{2}} - \frac{N}{\# U_1}\left(\mathbb{E}[X_1] + {\textstyle \frac{1}{2} + \frac{1}{N}}\right).
+$$
+
+All of this is valid for $N \ge 1$. @prp-worst_case(c) implies that $\mathbb{E}[X_1] \ll \log N$ for $N \ge 2$. Also, a classical result of Mertens is that for $N \ge 2$,
+
+$$
+\sum_{\substack{1 \le a,b \le N \\ \gcd(a,b) = 1}} 1 = \frac{N^2}{\zeta(2)} + O\left(N \log N\right).
+$$ {#eq-mertens}
+
+We'll use this in the proof of part (b), but at this point we only need that $\#U_1 \gg N^2$. Combining gives the second equation in (@eq-ExpEquiv_a). The verification of the first equation in (@eq-ExpEquiv_a) is almost identical.
+
+\(b\) We show that \(i\) implies \(ii\). Since $\gcd(c,d) = 1$ if and only if $\gcd(gc,gd) = g$, and since $T(gc,gd) = T(c,d)$ (@prp-4-1(c)),
+
+$$
+\begin{aligned}
+ N^2 \mathbb{E}[Y] & = \sum_{1 \le a,b \le N} T(a,b) \\
+ & = \sum_{g = 1}^{N} \sum_{\substack{1 \le a,b \le N \\ \gcd(a,b) = g}} T(a,b) \\
+ & = \sum_{g = 1}^{N} \sum_{\substack{1 \le c,d \le N/g \\ \gcd(c,d) = 1}} T(gc,gd) \\
+ & = \sum_{g = 1}^{N} \sum_{\substack{1 \le c,d \le N/g \\ \gcd(c,d) = 1}} T(c,d) \\
+ & = \sum_{1 \le g \le N/2} \sum_{\substack{1 \le c,d \le N/g \\ \gcd(c,d) = 1}} T(c,d)
+      + \sum_{N/2 < g \le N} T(1,1) \\
+ & = \sum_{1 \le g \le N/2} \sum_{\substack{1 \le c,d \le N/g \\ \gcd(c,d) = 1}} T(c,d) + O(N).
+\end{aligned}
+$$ {#eq-dagger}
+
+We now assume \(i\), which is tantamount to assuming that, for $M \ge 2$ and $\epsilon > 0$,
+
+$$
+\sum_{\substack{1 \le c,d \le M \\ \gcd(c,d) = 1}} T(c,d) = \sum_{\substack{1 \le c,d \le M \\ \gcd(c,d) = 1}} \left(\lambda \log M + \nu_1 + O_{\epsilon}\left(M^{\epsilon - 1/6}\right)\right),
+$$
+
+which, in view of (@eq-mertens), is equivalent to
+
+$$
+\sum_{\substack{1 \le c,d \le M \\ \gcd(c,d) = 1}} T(c,d) = \frac{M^2}{\zeta(2)}\left(\lambda \log M + \nu_1\right) + O_{\epsilon}\left(M^{2 + \epsilon - 1/6}\right).
+$$
+
+Putting this into (@eq-dagger), we obtain
+
+$$
+\begin{aligned}
+ \mathbb{E}[Y] & = \sum_{1 \le g \le N/2} \left[\left(\frac{(1/g)^2}{\zeta(2)}\right)\left(\lambda \log(N/g) + \nu_1\right) + O_{\epsilon}\left(N^{\epsilon - 1/6}/g^{2 + \epsilon - 1/6}\right)\right] + O\left(N^{-1}\right)\\
+ & = \lambda \log N \left(\frac{1}{\zeta(2)} \sum_{1 \le g \le N/2} \frac{1}{g^2}\right) + \lambda\left(\frac{1}{\zeta(2)} \sum_{1 \le g \le N/2} \frac{-\log g}{g^2}\right) + \nu_1 \left(\frac{1}{\zeta(2)} \sum_{1 \le g \le N/2} \frac{1}{g^2}\right) + O_{\epsilon}\left(N^{\epsilon - 1/6} \right). 
+\end{aligned}
+$${#eq-ddagger}
+
+where we have used the fact that
+
+$$\sum_{g = 1}^{\infty} \frac{1}{g^{2 + \epsilon - 1/6}} \ll 1$$
+
+in the $O$-term. Finally,
+
+$$
+\sum_{1 \le g \le N/2} \frac{1}{g^2} = \sum_{g = 1}^{\infty} \frac{1}{g^2} + O\left(N^{-1}\right) = \zeta(2) + O\left(N^{-1}\right) \quad \text{and} \quad \sum_{1 \le g \le N/2} \frac{-\log g}{g^2} = \sum_{g = 1}^{\infty} \frac{\log g}{g^2} + O\left(N^{-1}\log N\right) = \zeta'(2) + O\left(N^{-1}\log N\right),
+$$
+
+and making these substitutions in (@eq-ddagger) yields
+
+$$
+\mathbb{E}[Y] = \lambda\log N + \lambda \frac{\zeta'(2)}{\zeta(2)} + \nu_1 + O_{\epsilon}\left(N^{\epsilon - 1/6} \right).
+$$
+
+Hence \(i\) implies \(ii\). The converse can be obtained similarly: we begin by noting that ($\mu$ denoting the Möbius function)
+
+$$
+\sum_{\substack{1 \le a,b \le N \\ \gcd(a,b) = 1}} T(a,b) = \sum_{1 \le a,b \le N} T(a,b) \sum_{\substack{\delta \mid a \\ \delta \mid b}}  \mu(\delta) = \sum_{1 \le \delta \le N} \mu(\delta) \sum_{1 \le c,d \le N/\delta} T(\delta c,\delta d) = \sum_{1 \le \delta \le N} \mu(\delta) \sum_{1 \le c,d \le N/\delta} T(c,d).
+$$
+
+We leave the remainder of the proof as an exercise for the reader.
+:::
+
+Naturally, the next questions are related to variance, and, ultimately, distribution.

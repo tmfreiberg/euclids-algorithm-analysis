@@ -1,0 +1,60 @@
+# One-dimensional analysis {#sec-1d-analysis}
+
+As we will see, "one-dimensional analysis" is "harder" than "two-dimensional analysis". We may study $T(a,b)$ for coprime pairs $(a,b)$, and deduce results of all pairs $(a,b)$, coprime or not, using @prp-4-1(c) and the fact that $\gcd(a,b) = 1$ if and only if $\gcd(ga,gb) = g$ (positive integers $a,b,g$). It turns out that the techniques in the literature lead most naturally to results for sums over coprime pairs, with results for unrestricted counts effectively being corollaries.
+
+## Average-case analysis {#sec-1d-average-case}
+
+To formulate results precisely, given a positive integer $a$, set $\mathbb{Z}_a^{\times} = \{b \in [1,a] : \gcd(a,b) = 1\}$ (the _totatives_ of $a$), and define a random variable $Z : \mathbb{Z}_a^{\times} \to \mathbb{N}$ by letting $Z(b) = T(a,b)$ for each $b \in \mathbb{Z}_a^{\times}$ (with $b$ being chosen uniformly at random from $\mathbb{Z}_a^{\times}$). Thus,
+
+$$
+\mathbb{E}[Z] = \frac{1}{\phi(a)}\sum_{\substack{b = 1 \\ \gcd(a,b) = 1}}^{a} T(a,b)
+$$ {#eq-EZ}
+
+is the average number of divisions performed in Euclid's algorithm for $\gcd(a,b)$, over all $b$ satisfying $1 \le b \le a$ and $\gcd(a,b) = 1$. (Recall that Euler's totient function of $a$, $\phi(a)$, is just the size of $\mathbb{Z}_a^{\times}$.)
+
+Heilbronn [@heilbronn1968] considered (exercise to show the equivalence)
+
+$$\tau_a = \frac{1}{\phi(a)}\sum_{\substack{b = 0 \\ \gcd(a,b) = 1}}^{a - 1} T(b,a) = \mathbb{E}[Z] + 1,$$
+
+and showed that $\tau_a = \lambda \log a + O\left((\log\log a)^4\right)$, where $\lambda$ is as in (@eq-mu_dixon). Porter [@porter1975] subsequently showed that for all $a \ge 1$ and any $\epsilon > 0$, $\tau_a = \lambda \log a + C_P + O_{\epsilon}\left(a^{\epsilon - 1/6}\right)$, where $C_P$ is _Porter's constant_ as in (@eq-porter_constant). This is equivalent to the following.
+
+::: {#thm-porter}
+## Porter, 1975
+For all $a \ge 1$ and any $\epsilon > 0$, we have
+
+$$
+\mathbb{E}[Z] = \lambda \log a + C_P - 1 + O_{\epsilon}\left(a^{\epsilon - 1/6}\right).
+$$ {#eq-porter_thm}
+:::
+
+A result of this kind had been predicted by Knuth [@knuth1997], based on a heuristic and numerics.
+
+## Error term, variance, and distribution {#sec-1d-higher-moments}
+
+Comparable estimates for the second moment of $Z$ have not been established, let alone its distribution. Much more has been proved in the "two-dimensional analysis", in which we may exploit the fact that we average over $b$ as well. But let us persevere with $Z$ for the moment: our numerical data will suggest a roughly normal distribution, with variance of order $\log a$.
+
+For a given $a$, let us model the summands $T(a,b)$, $b \in \mathbb{Z}^{\times}_{a}$, as a sequence $Z_1,\ldots,Z_{\phi(a)}$ of independent, identically distributed random variables, each with mean $\mu_a = \lambda\log a + C_P - 1$, and variance $\sigma_a^2 = \mathrm{Var}(Z)$ (whatever it is). In other words, let us model the sum in (@eq-EZ) as a sum $Z_1 + \cdots + Z_{\phi(a)}$ of i.i.d. random variables of mean $\mu_a$ and variance $\sigma_a^2$. If
+
+$$\bar{Z}_a = \frac{Z_1 + \cdots + Z_{\phi(a)}}{\phi(a)},$$
+
+then, by the central limit theorem,
+
+$$\frac{\sqrt{\phi(a)}(\bar{Z}_a - \mu_a)}{\sigma_a} \overset{d}{\to} \mathrm{Norm}(0,1)$$
+
+as $\phi(a) \to \infty$ (and hence as $a \to \infty$). Thus, for large $\phi(a)$ (and hence for large $a$),
+
+$$\mathbb{P}\left(\sqrt{\phi(a)} (\bar{Z}_a - \mu_a) > z\sigma_a\right) \approx \frac{1}{\sqrt{2\pi}}\int_{z}^{\infty} e^{-t^2/2} dt \le \frac{e^{-z^2/2}}{z\sqrt{2\pi}} \quad (z > 0).$$
+
+(Last inequality an exercise.) Similarly for the probability that $\sqrt{\phi(a)} (\bar{Z}_a - \mu_a) < -z\sigma_a$. This becomes vanishingly small as $z$ becomes large. As $\bar{Z}_a$ is our model for the RHS of (@eq-EZ), this leads us to suspect that the RHS of (@eq-EZ) virtually always takes values lying within $z\sigma_a/\sqrt{\phi(a)}$ of $\mu_a$, if $z$ is "large". Since $a^{1 - \epsilon} \ll_{\epsilon} \phi(a) < a$, and as we suspect that $\sigma_a$ is of order $\log a$, we suggest the following.
+
+::: {#cnj-porter}
+For all $a \ge 1$ and any $\epsilon > 0$, we have
+
+$$
+\mathbb{E}[Z] = \lambda \log a + C_P - 1 + O_{\epsilon}\left(a^{\epsilon - 1/2}\right).
+$$ {#eq-porter_conjecture}
+:::
+
+We might be able to replace the $O$-term by something like $O(a^{-1/2}\log a)$, or even $O(a^{-1/2})$. If true, @cnj-porter would be one of numerous instances of "square-root cancellation" in number theory, the most famous example of which is a conjecture concerning the Mertens function, which is equivalent to the Riemann hypothesis! Moreover, we believe that for "most" $a$, if not all sufficiently large $a$, $Z$ is "approximately" normally distributed, with mean $\lambda \log a + C_P - 1$ and variance of order $\log a$. The empirical evidence in @sec-1d-investigation seems to back this up.
+
+Regarding the variance, it seems that $\mathrm{Var}(Z) - \eta \log N$ converges (slowly) to some constant as $\phi(a) \to \infty$. (See (@eq-hensley_constant) and [Two-dimensional analysis](#sec-2d-analysis) for more about Hensley's constant $\eta = 0.5160524\ldots$, which arises in the variance of the two-dimensional analysis.) That is, we suspect that $\mathrm{Var}(Z) = \eta \log N + \mathrm{constant} + \mathrm{error}$, where $\mathrm{constant} \approx -0.3$ and $\mathrm{error} \ll_{\epsilon} a^{\epsilon - 1/2}$ for any $\epsilon > 0$. Admittedly, our numerical evidence for this could be stronger (see [One-dimensional analysis: variance](#sec-1d-investigation-variance)).

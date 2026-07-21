@@ -1,0 +1,66 @@
+# Constants {#sec-constants}
+
+We will presently begin our analysis of Euclid's algorithm (beyond the worst-case). Several constants will arise: let us record them here at the outset, for ease of reference.
+
+The [Euler-Mascheroni constant](https://en.wikipedia.org/wiki/Euler%27s_constant):
+
+$$
+\gamma = \lim_{n \to \infty}\left(-\log n + \sum_{k = 1}^n \frac{1}{k}\right) = 0.5772156\ldots.
+$$ {#eq-euler-mascheroni}
+
+The Riemann zeta function $\zeta(s)$, and its first and second derivatives $\zeta'(s)$ and $\zeta''(s)$, at $s = 2$:
+
+$$
+\begin{aligned}
+\zeta(2) & = \sum_{n = 1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6} = 1.6449340\ldots \\
+\zeta'(2) & = -\sum_{n = 2}^{\infty} \frac{\log n}{n^2} = -0.9375482\ldots \\
+\zeta''(2) & = \sum_{n = 2}^{\infty} \frac{(\log n)^2}{n^2} = 1.98928\ldots
+\end{aligned}
+$$ {#eq-zeta-values}
+
+There is also the logarithmic derivative ($\Lambda$ is the von-Mangoldt function here):
+
+$$
+\frac{\zeta'(2)}{\zeta(2)} = -\sum_{n = 1}^{\infty} \frac{\Lambda(n)}{n^2} = -0.5699609\ldots
+$$ {#eq-zeta-log-derivative}
+
+The reciprocal of [Lévy's constant](https://oeis.org/A086702):
+
+$$
+\lambda = \frac{2\log 2}{\zeta(2)} = \frac{12 \log 2}{\pi^2} = 0.8427659\ldots.
+$$ {#eq-mu_dixon}
+
+[Porter's constant](https://en.wikipedia.org/wiki/Porter%27s_constant), also called the Lochs-Porter constant:
+
+$$
+C_P = \frac{\log 2}{\zeta(2)}\left(3\log 2 + 4\gamma - \frac{4\zeta'(2)}{\zeta(2)} - 2 \right) - \frac{1}{2} = 1.4670780\ldots
+$$ {#eq-porter_constant}
+
+Note also that $C_P - 1 = 0.4670780\ldots$.
+
+We also have:
+
+$$
+\begin{aligned}
+\nu & = \frac{2\log 2}{\zeta(2)}\left(-\frac{3}{2} - \frac{\zeta'(2)}{\zeta(2)} + \frac{3}{2}\log 2 + 2\gamma\right) - 1 = 0.0653514\ldots \\
+\nu_1 & = \nu - \lambda\frac{\zeta'(2)}{\zeta(2)} = 0.5456951\ldots
+\end{aligned}
+$$ {#eq-norton_constant}
+
+Note also that $\nu - 1/2 = -0.4346485\ldots$ and $\nu_1 - 1/2 = 0.0456951\ldots$.
+
+Hensley's constant:
+
+$$
+\eta = 0.5160524\ldots
+$$ {#eq-hensley_constant}
+
+Finally, we have mysterious constants $\kappa$ and $\kappa_1$, whose values we do not know, but we know that
+
+$$
+\kappa - \kappa_1 = \eta\frac{\zeta'(2)}{\zeta(2)} + \lambda^2\left(\frac{\zeta''(2)}{\zeta(2)} - \left(\frac{\zeta'(2)}{\zeta(2)}\right)^2\right) = 0.3340\ldots
+$$ {#eq-deltakappa}
+
+(and our numerics suggest that $\kappa \approx -0.1$, meaning $\kappa_1 \approx -0.43$).
+
+All of these values are collected in the package; see `src/euclid_analysis/constants.py`, where they are exposed as `EULER_MASCHERONI` ($\gamma$), `ZETA_PRIME_2` ($\zeta'(2)$), `ZETA_DOUBLE_PRIME_2` ($\zeta''(2)$), `LAMBDA_DIXON` ($\lambda$), `PORTER_CONSTANT` ($C_P$), `NU_NORTON` ($\nu$), `NU_NORTON_COPRIME` ($\nu_1$), `ETA_HENSLEY` ($\eta$), and `DELTA_KAPPA` ($\kappa - \kappa_1$), along with the guesstimates `KAPPA_VAR` ($\kappa$) and `KAPPA_VAR_COPRIME` ($\kappa_1$).

@@ -1,0 +1,204 @@
+# Worst-case analysis {#sec-worst-case}
+
+```{python}
+#| echo: false
+import euclid_analysis as ea
+```
+
+First let's record a result that will be useful in the sequel.
+
+::: {#prp-4-1}
+We have the following for $a \ge b \ge 1$.
+
+\(a\) $T(a,b) = 1$ if and only if $b \mid a$.\
+\(b\) If $a > b$, $T(b,a) = T(a,b) + 1$.\
+\(c\) For all positive integers $d$, $T(da,db) = T(a,b)$.
+:::
+
+::: {.proof}
+
+\(a\) Simply note that $b \mid a$ if and only if there exists an integer $q$ such that $a = qb + 0$.
+
+\(b\) If $1 \le b < a$ then the first two divisions of the Euclidean algorithm for $\gcd(b,a)$ are: $b = 0a + b$ and $a = qb + r$, $0 \le r < b$. The second division is the first done in the Euclidean algorithm for $\gcd(a,b)$.
+
+\(c\) If (@eq-remseq) is the remainder sequence given by Euclid's algorithm for $\gcd(a,b)$, then for any positive integer $d$,
+$$da = dr_0, db = dr_1 > dr_2 > \cdots > dr_n > dr_{n + 1} = 0$$
+is the remainder sequence given by Euclid's algorithm for $\gcd(da,db)$ (the quotients $q_i$ in (@eq-rem_seq2) won't change).
+:::
+
+```{python}
+# Let's illustrate the invariance of the number of divisions under (a,b) -> (da,db). 
+# Take (a,b) as in the previous code block and d = 67.
+print(ea.write_euclid(67*1011,67*69))
+```
+
+What are the smallest possible values of $a$ and $b$ if $a \ge b \ge 1$ and $T(a,b) = n$? If $n = 1$ we need only note that $T(1,1) = 1$ to see that the answer is $a = b = 1$. Since $T(a,b) = 1$ if and only if $b \mid a$, the answer for $n \ge 2$ must satisfy $a > b \ge 2$ and $b \nmid a$. (In fact, by @prp-4-1(c), the answer in general must satisfy $\gcd(a,b) = 1$, i.e. $r_n = 1$.) Noting that $T(3,2) = 2$ then gives the answer for $n = 2$ as $a = 3$ and $b = 2$.
+
+```python
+# Some very naive code to answer the question: what are the smallest possible values of a and b if 
+# a >= b >= 1 and T(a,b) = n?
+# Basically a very inefficient way of computing Fibonacci numbers, the code really starts to get slow for n = 16.
+# But the first few n are enough to help us see a pattern.
+
+def W(n):
+    a, b = 1, 1
+    while gcd_steps(a,b,0)[1] < n:
+        a += 1
+        for b in range(1,a+1):
+            if gcd_steps(a,b,0)[1] == n:
+                return a, b
+    return a, b
+
+print(W(1), W(2), W(3), W(4), W(5), W(6), W(7), W(8), W(9), W(10))
+```
+
+```
+(1, 1) (3, 2) (5, 3) (8, 5) (13, 8) (21, 13) (34, 21) (55, 34) (89, 55) (144, 89)
+```
+
+It isn't difficult to see that for a given $n \ge 2$, if $T(a,b) = n$, $a$ and $b$ will be minimal if, in (@eq-rem_seq2), $r_n = 1$, $r_{n - 1} = 2$, and $q_1 = q_2 = \cdots = q_{n - 1} = 1$. Thus, $r_{n - 2} = 1(2) + 1 = 3$, $r_{n - 3} = 1(3) + 2 = 5$, and so on.
+
+```{python}
+print(ea.write_euclid(55,34))
+```
+
+These are the Fibonacci numbers!
+
+::: {#def-4-2}
+Let $f_0 = 0$, $f_1 = 1$, and $f_{n+2} = f_{n + 1} + f_{n}$ for $n \ge 0$. Then $(f_0,f_1,\ldots)$ is the _Fibonacci sequence_, and $f_n$ is the $n$-th _Fibonacci number_.
+:::
+
+::: {#prp-4-3}
+Let $a \ge b \ge 1$. (a) For $n \ge 0$, we have $\gcd(f_{n + 1},f_{n}) = 1$. For $n \ge 1$, we have $T(f_{n + 2},f_{n + 1}) = n$. (b) If $n \ge 1$ and $T(a,b) = n$, then $a \ge f_{n + 2}$ and $b \ge f_{n+1}$.
+:::
+
+::: {.proof}
+\(a\) Since $f_{n + 2} = f_{n + 1} + f_{n}$, we have $\gcd(f_{n + 2},f_{n + 1}) = \gcd(f_{n + 1},f_{n})$. Since $\gcd(f_1,f_0) = \gcd(1,0) = 1$, that $\gcd(f_{n + 1},f_n) = 1$ for all $n \ge 0$ now follows by mathematical induction.
+
+Also, since $f_{n + 2} = f_{n + 1} + f_n$ _and_ $0 \le f_n < f_{n + 1}$ for $n \ge 2$, we have $T(f_{n + 2},f_{n + 1}) = T(f_{n + 1}, f_n) + 1$ for $n \ge 2$. Since $T(f_{1 + 2},f_{1 + 1}) = T(2,1) = 1$, that $T(f_{n + 2},f_{n + 1}) = n$ for all $n \ge 1$ now follows by mathematical induction.
+
+\(b\) We've verified the result for $n = 1$ and $n = 2$, so let $n \ge 2$ and suppose the result holds for $n$. Let $T(a,b) = n + 1$. Since this is greater than $1$, $b \nmid a$ (as noted above), and $a = qb + r$ for some $q$ and $r$ with $q \ge 1$ and $1 \le r < b$. Now, $T(b,r) = n$ and so, by inductive hypothesis, $b \ge f_{n + 2}$ and $r \ge f_{n + 1}$. Thus, $a = qb + r \ge f_{n + 2} + f_{n+1} = f_{n + 3}$. In conclusion, $a \ge f_{n + 3}$ and $b \ge f_{n + 2}$, and the result holds for all $n \ge 2$, by mathematical induction.
+:::
+
+::: {.remark}
+For $a \ge b \ge 1$ and $n \ge 1$, the contrapositive of part (b) of the above proposition is: if either $a < f_{n + 2}$ or $b < f_{n + 1}$, then $T(a,b) \le n - 1$.
+:::
+
+```python
+# Let's test this out for small n. 
+# In the table below, row a column b contains T(a,b).
+# Below the diagonal corresponds to a > b.
+# Note that, for instance, the first time 4 appears below the diagonal is in row 8, column 5: 8 = f_6 and 5 = f_5.
+
+test_dict = {}
+for a in range(14):
+    test_dict[a] = {}
+    for b in range(14):
+        test_dict[a][b] = gcd_steps(a,b,0)[1]
+        
+pd.DataFrame.from_dict(test_dict, orient='index')#.astype('int')
+```
+
+```
+	0	1	2	3	4	5	6	7	8	9	10	11	12	13
+0	0	1	1	1	1	1	1	1	1	1	1	1	1	1
+1	0	1	2	2	2	2	2	2	2	2	2	2	2	2
+2	0	1	1	3	2	3	2	3	2	3	2	3	2	3
+3	0	1	2	1	3	4	2	3	4	2	3	4	2	3
+4	0	1	1	2	1	3	3	4	2	3	3	4	2	3
+5	0	1	2	3	2	1	3	4	5	4	2	3	4	5
+6	0	1	1	1	2	2	1	3	3	3	4	4	2	3
+7	0	1	2	2	3	3	2	1	3	4	4	5	5	4
+8	0	1	1	3	1	4	2	2	1	3	3	5	3	6
+9	0	1	2	1	2	3	2	3	2	1	3	4	3	4
+10	0	1	1	2	2	1	3	3	2	2	1	3	3	4
+11	0	1	2	3	3	2	3	4	4	3	2	1	3	4
+12	0	1	1	1	1	3	1	4	2	2	2	2	1	3
+13	0	1	2	2	2	4	2	3	5	3	3	3	2	1
+```
+
+## The Fibonacci numbers and dynamic programming {#sec-fibonacci}
+
+Let's take a detour and compute some Fibonacci numbers. Evaluating $f_n$ from the naive recursion recomputes the same subproblems repeatedly, so it takes time exponential in $n$: the computation of $f_5$, for example, unwinds into a sum of $1$'s and $0$'s of length $f_5$, and $f_n$ is of order $\phi^n$, where $\phi$ is the golden ratio. Dynamic programming removes the waste. Computing $f_0, f_1, \ldots, f_n$ in order and storing them is one version, tabulation; keeping only the last two values in a pair of variables and updating them on each of the $n$ steps is another, memoization, and it needs only about $n$ additions and $O(1)$ extra space. The source gives all three (the naive recursion, the list, and the two-variable version) together with the timing code behind the figure below; see the `fibonacci` module (`src/euclid_analysis/fibonacci.py`).
+
+![](/images/fibonacci_time.png)
+
+We can show that if $\phi$ and $\psi$ are the roots of $x^2 - x - 1$, then for $n \ge 0$,
+
+$$
+f_n = \frac{\phi^{n} - \psi^n}{\phi - \psi}.
+$$ {#eq-fib_phi}
+
+Indeed, any root $\lambda$ of $x^2 - x - 1$ satisfies $\lambda^{n + 2} - \lambda^{n + 1} - \lambda = 0$ for all $n \ge 0$, just as the Fibonacci numbers satisfy $f_{n + 2} - f_{n + 1} - f_{n} = 0$ for $n \ge 0$. It follows that if $c_1$ and $c_2$ are constants such that $f_n = c_1\phi^n + c_2\psi^n$ for $n = 0$ and $n = 1$, then this equation holds for all $n \ge 0$. Letting $n = 0$ shows that $c_2 = -c_1$, and then letting $n = 1$ gives $c_1 = 1/(\phi - \psi)$. We let $\phi = \frac{1}{2}(1 + \sqrt{5})$ be the positive root (the golden ratio), and $\psi = \frac{1}{2}(1 - \sqrt{5})$ be the other. Thus, $\phi - \psi = \sqrt{5}$, and $f_n$ is the integer nearest $\phi^n/\sqrt{5}$.
+
+```python
+# Let's try this out. 
+# In fact, phi^n/sqrt(5) < f_n when n is odd, and phi^n/sqrt(5) > f_n when n is even.
+
+phi, psi = np.roots([1,-1,-1])
+
+def fib_closed_form(n):
+    return (phi**(n) - psi**(n))/(phi - psi)
+
+for n in range(11):
+    print(f'n = {n}, f_n = {fib(n)}, phi^n/(phi - psi) = {phi**(n)/(phi - psi):.3f}..., nearest int = {int(np.rint(phi**(n)/(phi - psi)))}')
+```
+
+```
+n = 0, f_n = 0, phi^n/(phi - psi) = 0.447..., nearest int = 0
+n = 1, f_n = 1, phi^n/(phi - psi) = 0.724..., nearest int = 1
+n = 2, f_n = 1, phi^n/(phi - psi) = 1.171..., nearest int = 1
+n = 3, f_n = 2, phi^n/(phi - psi) = 1.894..., nearest int = 2
+n = 4, f_n = 3, phi^n/(phi - psi) = 3.065..., nearest int = 3
+n = 5, f_n = 5, phi^n/(phi - psi) = 4.960..., nearest int = 5
+n = 6, f_n = 8, phi^n/(phi - psi) = 8.025..., nearest int = 8
+n = 7, f_n = 13, phi^n/(phi - psi) = 12.985..., nearest int = 13
+n = 8, f_n = 21, phi^n/(phi - psi) = 21.010..., nearest int = 21
+n = 9, f_n = 34, phi^n/(phi - psi) = 33.994..., nearest int = 34
+n = 10, f_n = 55, phi^n/(phi - psi) = 55.004..., nearest int = 55
+```
+
+We are now ready to establish the worst-case result for the number of divisions in Euclid's algorithm. The following proposition implies that for $N \ge 2$,
+
+$$
+\max\{T(a,b) : 1 \le b \le a \le N\} = \Theta(\log N).
+$$
+
+::: {#prp-worst_case}
+For $N \ge 2$,
+$$\frac{\log(N - 1)}{\log \phi} - 1.328 < \max\{T(a,b) : 1 \le b \le a \le N\} < \frac{\log(N + 1)}{\log \phi} - 0.327.$$
+:::
+
+Note that $1/\log \phi = 2.0780869\ldots$.
+
+::: {.proof}
+First of all, if $m \ge 1$ then $f_{n + 1} \le m < f_{n + 2}$ for some $n \ge 1$. Thus, in view of (@eq-fib_phi), we have (for $m \ge 2$ in the left inequality)
+
+$$\frac{\log(m - 1)}{\log \phi} - 0.328 < n < \frac{\log(m + 1)}{\log \phi} + 0.673. $${#eq-star}
+
+To see this in more detail, note that $f_{k} = \lfloor \phi^k/(\phi - \psi)\rfloor$ if $k$ is even, while $f_{k} = \lceil \phi^k/(\phi - \psi)\rceil$ if $k$ is odd; also, $\phi - \psi = \sqrt{5}$. Thus, supposing first that $n$ is even,
+
+$$\frac{\phi^{n+1}}{\sqrt{5}} < f_{n+1} \le m < f_{n + 2} < \frac{\phi^{n+2}}{\sqrt{5}}.$$
+
+Taking logarithms, we see that
+
+$$n + 1 < \frac{\log m + \frac{1}{2}\log 5}{\log \phi} < n + 2,$$
+
+leading (after a calculation) to
+
+$$ \frac{\log m}{\log \phi} - 0.3277\ldots < n < \frac{\log m}{\log \phi} + 0.6722\ldots .$$
+
+Similarly, if $n$ is odd and $m \ge 2$, then
+
+$$ \frac{\log(m-1)}{\log \phi} - 0.3277\ldots < n < \frac{\log(m + 1)}{\log \phi} + 0.6722\ldots .$$
+
+Combining gives (@eq-star).
+
+Now, let $N \ge 2$ be given, and let $n \ge 2$ be such that $f_{n + 1} \le N < f_{n + 2}$. By @prp-4-3(b), for $1 \le b \le a \le N$, we have $T(a,b) \le n - 1$, with equality attained when $a = f_{n + 1}$ and $b = f_{n}$. That is,
+
+$$\max\{T(a,b) : 1 \le b \le a \le N\} = n - 1,$$
+
+and the result follows by (@eq-star).
+:::
+
+We see that, for a given $N \ge 2$, as the pair $(a,b)$ ranges over $1 \le b < a \le N$, $T(a,b)$ ranges from $1$ to around $2.078 \log N$. What is the average value of $T(a,b)$ over $(a,b)$ in the same region? How are the values of $T(a,b)$ distributed? We will answer these questions, and more, below.

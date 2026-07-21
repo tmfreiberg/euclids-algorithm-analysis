@@ -1,0 +1,28 @@
+name: euclid-analysis
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  # --- Scientific stack (used by the package) ---
+  - numpy>=1.24
+  - pandas>=2.0
+  - scipy>=1.10
+  - matplotlib>=3.7
+  - pillow>=10.0            # animated-GIF writer for matplotlib
+  # --- Notebook execution for the Quarto book ---
+  - jupyter
+  - ipykernel
+  - nbformat
+  - nbclient
+  # --- Documentation toolchain ---
+  - quarto>=1.4
+  # --- Development / testing ---
+  - pytest>=7.4
+  - pytest-cov>=4.1
+  - ruff>=0.1
+  - mypy>=1.5
+  - pip
+  # Install the project itself (editable) so `import euclid_analysis` works
+  # and the notebooks/book can run the code directly.
+  - pip:
+      - -e .

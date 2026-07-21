@@ -1,0 +1,13 @@
+# Code for analysing Euclid's algorithm {#sec-code-for-analysing}
+
+The code that generates our data and its statistics lives in the package, chiefly in `src/euclid_analysis/frequencies.py` and `src/euclid_analysis/statistics.py`, with the step counter itself in `src/euclid_analysis/algorithms.py`. Rather than reproduce it here, we describe what each piece does.
+
+At the base is `gcd_steps` (equivalently `count_steps`): it runs Euclid's algorithm on a pair $(a,b)$ and returns both $\gcd(a,b)$ and the number of divisions $T(a,b)$.
+
+Everything for the one-dimensional analysis is built by `heilbronn`. Given a list of values of $a$, it walks through every $b \in \{1,\ldots,a\}$, counts the divisions $T(a,b)$, and tallies how often each step-count occurs, returning two frequency tables: one restricted to those $b$ with $\gcd(a,b)$ in a supplied list (usually $\{1\}$, the coprime case) and one over all $b \in \{1,\ldots,a\}$.
+
+The two-dimensional counterpart is `euclid_alg_frequencies`, which ranges over pairs. For each threshold $N$ in a supplied list it counts, over all $(a,b)$ with $0 < b < a < N$, the frequency of each gcd value and the frequency of each step-count $T(a,b)$ (again in coprime-restricted and unrestricted versions). Since a full run covers billions of pairs, it is written to extend earlier results rather than start over: hand it the dictionaries from a previous run and it continues the tally from where that left off.
+
+Both return "meta" dictionaries, keyed by $a$ in the one-dimensional case and by $N$ in the two-dimensional case, whose values are the frequency tables just described; the small helper `dictionary_sort` keeps them ordered by key.
+
+Summary statistics come from `dictionary_statistics`, which turns a single frequency table into its relative-frequency distribution together with the mean, second moment, variance, standard deviation, median, and mode. `basic_stats` applies that across a whole meta-dictionary, `dists` pulls out just the distributions, and `tabulate` renders a meta-dictionary as a pandas DataFrame for readable display.

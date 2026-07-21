@@ -1,0 +1,63 @@
+name: Publish Quarto book
+
+# Build the Quarto book and deploy it to GitHub Pages on every push to main.
+# The book imports the `euclid_analysis` package and executes the fast code
+# cells; the slow animations are embedded as precomputed images from images/.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permissions required by the GitHub Pages deployment action.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the package and notebook dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install jupyter nbclient ipykernel
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render the book
+        uses: quarto-dev/quarto-actions/render@v2
+        with:
+          path: book
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: book/_book
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

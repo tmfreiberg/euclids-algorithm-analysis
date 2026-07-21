@@ -1,0 +1,83 @@
+# A quick recap of the GCD and Euclid's algorithm {#sec-definitions}
+
+```{python}
+#| echo: false
+import euclid_analysis as ea
+```
+
+::: {#prp-3-1}
+Let $a,b \in \mathbb{Z}$. There exists a unique nonnegative $g \in \mathbb{Z}$ such that, for any $d \in \mathbb{Z}$, $d \mid a$ and $d \mid b$ if and only if $d \mid g$.
+:::
+
+::: {#def-3-2}
+The integer $g$ is the _greatest common divisor_ of $a$ and $b$, denoted $\gcd(a,b)$. The common divisors of $a$ and $b$ are precisely the divisors of $\gcd(a,b)$.
+:::
+
+The divisors of $g$ are the divisors of $-g$, so $-\gcd(a,b)$ satisfies the definition of greatest common divisor sans nonnegativity. Were we to generalize the notion of gcd to commutative rings, we would say that $g$ is _a_ gcd of $a$ and $b$ if the common divisors of $a$ and $b$ are precisely the divisors of $g$. Then, coming back to the integers, we would say that $g$ and $-g$ are both gcds of $a$ and $b$, but that gcds (in $\mathbb{Z}$) are unique _up to multiplcation by a unit_ ($\pm 1$).
+
+Note that, for all $a \in \mathbb{Z}$, $\gcd(a,0) = |a|$ as all integers divide $0$ (hence the common divisors of $a$ and $0$ are the divisors of $a$). In particular, $\gcd(0,0) = 0$.
+
+How can we compute $\gcd(a,b)$ when $a$ and $b$ are nonzero?
+
+::: {#euclids_algorithm .named}
+**Euclid's algorithm.** If $b \ge 1$, the division algorithm gives unique integers $q$ and $r$ such that $a = qb + r$ and $0 \le r < b$. It is straightforward to verify that the common divisors of $a$ and $b$ are precisely the common divisors of $b$ and $r$. Hence $\gcd(a,b) = \gcd(b,r)$. If $r > 0$ we may apply the division algorithm again: $b = q_2r + r_3$ with $0 \le r_3 < r$ and $\gcd(b,r) = \gcd(r,r_3)$. Repeating the process as many times as necessary, we obtain a sequence 
+
+$$
+a = r_0, b = r_1 > r = r_2 > r_3 > \cdots > r_n > r_{n + 1} = 0
+$$ {#eq-remseq} 
+
+with the property that $\gcd(r_{i-1},r_{i}) = \gcd(r_{i},r_{i + 1})$ for $i = 1,\ldots,n$, because
+
+$$
+r_{i - 1} = q_ir_i + r_{i + 1} \quad (i = 1,\ldots,n).
+$$ {#eq-rem_seq2}
+
+But $\gcd(r_n,r_{n + 1}) = \gcd(r_n,0) = r_n$, and so in this way we find the gcd of $a$ and $b$ (and of $\gcd(r_{i},r_{i + 1})$ for $i = 1,\ldots,n$). The case $b \le -1$ is similar, but instead of (@eq-remseq) we have
+
+$$
+a = r_0, b = r_1 < r_2 < r_3 < \cdots < r_{n} < r_{n + 1} = 0
+$$ {#eq-rem_seq_neg}
+
+and $\gcd(a,b) = -r_n$. However, since $\gcd(a,b) = \gcd(|a|,|b|)$, we will typically assume that $a$ and $b$ are nonnegative.
+:::
+
+::: {#def-3-3}
+Given $a,b \in \mathbb{Z}$, let $T(a,b) = n$ with $n$ as in (@eq-remseq) (if $b \ge 0$) or (@eq-rem_seq_neg) (if $b \le 0$). Thus, $T(a,b)$ is the number of "steps" or "divisions" in Euclid's algorithm for computing $\gcd(a,b)$.
+:::
+
+## Code for Euclid's algorithm {#sec-codeEuclid}
+
+If we just want $\gcd(a,b)$, the most straightforward way is a direct recursion on the division algorithm, which is the algorithm itself in code form:
+
+```python
+def gcd(a,b):
+    if b == 0:
+        return abs(a)
+    return gcd(b,a%b)
+```
+
+If we want $\gcd(a,b)$ together with the number of steps $T(a,b)$, we thread a counter through the recursion:
+
+```python
+def gcd_steps(a,b,i): # Input i = 0
+    if b == 0:
+        return abs(a), i # Output gcd(a,b) and i = T(a,b)
+    i += 1
+    return gcd_steps(b,a%b,i)
+```
+
+The source defines several further variants: `rem` for the remainder sequence $[r_0,r_1,\ldots,r_n]$, `quot_rem` for the quotients and remainders together, and `write_euclid`, which writes out the whole computation. See `src/euclid_analysis/algorithms.py`.
+
+As a side-note, the definition of gcd extends in an obvious way to gcd of an $n$-tuple of integers, $n \ge 2$. Namely, $\gcd(a_1,...,a_n)$ is the unique nonnegative integer with the following property. For any integer $d$, $d$ divides every $a_i$ if and only if $d$ divides $\gcd(a_1,...,a_n)$. Thus, $\gcd(a_1,...,a_n) = \gcd(a_1,gcd(a_2,...,a_n))$, and we can use recursion to compute the gcd of an $n$-tuple, which is what our function `gcdn` does.
+
+Here is `write_euclid` on $(1011, 69)$:
+
+```{python}
+print(ea.write_euclid(1011,69))
+```
+
+The case of negative inputs is handled in the same way. For $(-1011, -69)$:
+
+```{python}
+print(ea.write_euclid(-1011,-69))
+```
