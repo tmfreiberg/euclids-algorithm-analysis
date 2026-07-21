@@ -43,13 +43,11 @@ jobs:
 
       - name: Render the book
         uses: quarto-dev/quarto-actions/render@v2
-        with:
-          path: book
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: book/_book
+          path: _book
 
   deploy:
     needs: build
