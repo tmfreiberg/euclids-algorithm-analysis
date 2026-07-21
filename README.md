@@ -123,9 +123,9 @@ See [`docs/cli.md`](docs/cli.md) for the full guide.
 ## Data
 
 The frequency tables in `data/` record, for each checkpoint `N` (or each `a` in
-the one-dimensional case), how many pairs achieve each step count. The large
-gcd-pair table `gcd_pairs_100001df.csv` (~11 MB) is **not** shipped; everything
-in the book and tests runs without it. To regenerate any table from scratch:
+the one-dimensional case), how many pairs achieve each step count. The largest,
+`gcd_pairs_100001df.csv` (~11 MB), is included but not required: the book and
+tests run without it. To regenerate any table from scratch:
 
 ```python
 _, B, C = ea.euclid_alg_frequencies([1], [], list(range(1, 101001, 1000)), {}, {}, {})
