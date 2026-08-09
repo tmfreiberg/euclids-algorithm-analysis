@@ -10,7 +10,7 @@ book:
   search: true
   reader-mode: true
   page-navigation: true
-  repo-url: https://github.com/tmfreiberg/euclids_algorithm_analysis
+  repo-url: https://github.com/tmfreiberg/euclids-algorithm-analysis
   repo-actions: [source, issue]
   sidebar:
     style: docked

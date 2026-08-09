@@ -45,9 +45,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/tmfreiberg/euclids_algorithm_analysis"
-Documentation = "https://tmfreiberg.github.io/euclids_algorithm_analysis/"
-Repository = "https://github.com/tmfreiberg/euclids_algorithm_analysis"
+Homepage = "https://github.com/tmfreiberg/euclids-algorithm-analysis"
+Documentation = "https://tmfreiberg.github.io/euclids-algorithm-analysis/"
+Repository = "https://github.com/tmfreiberg/euclids-algorithm-analysis"
 
 [tool.setuptools.packages.find]
 where = ["src"]

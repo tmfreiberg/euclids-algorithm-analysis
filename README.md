@@ -1,7 +1,7 @@
 # Euclid's Algorithm Analysis
 
-[![Tests](https://github.com/tmfreiberg/euclids_algorithm_analysis/actions/workflows/tests.yml/badge.svg)](https://github.com/tmfreiberg/euclids_algorithm_analysis/actions/workflows/tests.yml)
-[![Book](https://github.com/tmfreiberg/euclids_algorithm_analysis/actions/workflows/publish.yml/badge.svg)](https://github.com/tmfreiberg/euclids_algorithm_analysis/actions/workflows/publish.yml)
+[![Tests](https://github.com/tmfreiberg/euclids-algorithm-analysis/actions/workflows/tests.yml/badge.svg)](https://github.com/tmfreiberg/euclids-algorithm-analysis/actions/workflows/tests.yml)
+[![Book](https://github.com/tmfreiberg/euclids-algorithm-analysis/actions/workflows/publish.yml/badge.svg)](https://github.com/tmfreiberg/euclids-algorithm-analysis/actions/workflows/publish.yml)
 
 How many division steps does Euclid's algorithm take, on average, and how are
 those step counts distributed? This project implements Euclid's algorithm
@@ -12,7 +12,7 @@ Baladi–Vallée — including an empirical estimate of the otherwise-unknown
 subdominant constant `κ ≈ −0.1` in the variance.
 
 📖 **The full exposition — mathematics, code, plots, and animations — is published as a Quarto book:**
-**<https://tmfreiberg.github.io/euclids_algorithm_analysis/>**
+**<https://tmfreiberg.github.io/euclids-algorithm-analysis/>**
 
 This repository holds the reusable Python package (`euclid_analysis`), its test
 suite, the precomputed data and figures, and the sources for that book.
