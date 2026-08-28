@@ -154,7 +154,11 @@ $$\sum_{g = 1}^{\infty} \frac{1}{g^{2 + \epsilon - 1/6}} \ll 1$$
 in the $O$-term. Finally,
 
 $$
-\sum_{1 \le g \le N/2} \frac{1}{g^2} = \sum_{g = 1}^{\infty} \frac{1}{g^2} + O\left(N^{-1}\right) = \zeta(2) + O\left(N^{-1}\right) \quad \text{and} \quad \sum_{1 \le g \le N/2} \frac{-\log g}{g^2} = \sum_{g = 1}^{\infty} \frac{\log g}{g^2} + O\left(N^{-1}\log N\right) = \zeta'(2) + O\left(N^{-1}\log N\right),
+\sum_{1 \le g \le N/2} \frac{1}{g^2} = \sum_{g = 1}^{\infty} \frac{1}{g^2} + O\left(N^{-1}\right) = \zeta(2) + O\left(N^{-1}\right)
+$$
+and 
+$$
+\sum_{1 \le g \le N/2} \frac{-\log g}{g^2} = \sum_{g = 1}^{\infty} \frac{\log g}{g^2} + O\left(N^{-1}\log N\right) = \zeta'(2) + O\left(N^{-1}\log N\right),
 $$
 
 and making these substitutions in (@eq-ddagger) yields
@@ -173,3 +177,63 @@ We leave the remainder of the proof as an exercise for the reader.
 :::
 
 Naturally, the next questions are related to variance, and, ultimately, distribution.
+
+## Variance and distribution {#sec-2d-variance}
+
+Dixon [@dixon1970] showed that $|T(a,b) - \lambda\log a| < (\log a)^{1/2 + \epsilon}$ (with $\lambda$ as in (@eq-mu_dixon)) for all but at most $N^2\exp\left(-c(\log N)^{\epsilon/2}\right)$ ($c$ a constant) of the pairs $(a,b)$ in the range $1 \le b < a \le N$. This may hint at a variance, but it was Hensley [@hensley1994] who, in a _tour de force_ of functional analysis, first attained a sharp estimate for the variance of $X_1$ (and $X$), and also established that the distribution of $X$ (and of $X_1$) is asymptotically normal.
+
+::: {#thm-hensley}
+## Hensley, 1994
+There exist constants $\lambda$ and $\eta$ (as in (@eq-mu_dixon) and (@eq-hensley_constant)), such that the following holds for all sufficiently large $N$. Let $\mu = \lambda \log N$, and $\sigma = \sqrt{\eta \log N}$. Uniformly for $|s - \mu| \le \frac{1}{2}(\log N)^{1/2}(\log\log N)^2$,
+
+$$
+\mathbb{P}(X_1 = s) = \left(1 + O\left((\log N)^{-1/24}\right)\right) \frac{\exp\left(-\frac{1}{2}\left(\frac{s - \mu}{\sigma}\right)^2\right)}{\sigma \sqrt{2\pi}}.
+$$ {#eq-hensleyprob}
+
+The same is true with $X$ in place of $X_1$.
+:::
+
+A unifying framework for analysing a general class of Euclidean (and other) algorithms has been developed, principally, by Vallée. The methods rely on properties of transfer operators suitably adapted from dynamical systems theory. The following is a special case of a very deep result of Baladi and Vallée [@baladi2005].
+
+::: {#thm-BalVal}
+## Baladi and Vallée, 2005
+There exist constants $\lambda$, $\nu_1$, $\eta$ (as in (@eq-mu_dixon), (@eq-norton_constant), and (@eq-hensley_constant)), and $\kappa_1$ such that, for all $N \ge 2$ and any $\epsilon > 0$,
+
+$$
+\mathbb{E}[X_1] = \lambda\log N + \nu_1 + O_{\epsilon}\left(N^{\epsilon - 1/6}\right)
+$$ {#eq-BalValEX1}
+
+and
+
+$$
+\mathrm{Var}(X_1) = \eta\log N + \kappa_1 + O\left(N^{-c}\right)
+$$ {#eq-BalValVarX1}
+
+(for some positive constant $c$). Moreover, $X_1$ is asymptotically normal: for all $N \ge 2$ and all $z$,
+
+$$
+\mathbb{P}\left(\frac{X_1 - \lambda\log N}{\sqrt{\eta\log N}} \le z\right) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^z e^{-t^2/2} dt + O\left(\left(\log N\right)^{-1/2}\right).
+$$ {#eq-BalValDistX1}
+
+The same is true of $X$, with suitable constants $\nu$ and $\kappa$ in place of $\nu_1$ and $\kappa_1$ (the constants $\lambda$ and $\eta$ remain the same).
+:::
+
+As we mentioned following @thm-norton of Norton, if @cnj-porter is true, the $O$-term in (@eq-BalValEX1) can be replaced by $O_{\epsilon}\left(N^{\epsilon - 1/2}\right)$. We also believe that the $O$-term in (@eq-BalValVarX1) can be replaced by $O_{\epsilon}\left(N^{\epsilon - 1/2}\right)$.
+
+In the variance (@eq-BalValVarX1), Hensley's constant $\eta$ (see (@eq-hensley_constant)) does not admit a simple closed form (it can be described in terms of the spectrum of a certain transfer operator), but was shown by Lhote [@lhote2005] to be polynomial-time computable, and the first seven digits ($\eta = 0.5160524\ldots$) were given by Lhote _op. cit_. The constant $\kappa_1$ is "even more obscure" (in the words of Baladi and Vallée [@baladi2005]), and to our knowledge has not been investigated numerically. What we can say is that, assuming our back-of-the-envelope calculation is correct (we invite the reader to verify this along the lines of @prp-ExpEquiv(b)), $\mathrm{Var}[X] - \mathrm{Var}[X_1]$ is (up to an $O$-term)
+
+$$
+\kappa - \kappa_1 = \eta\frac{\zeta'(2)}{\zeta(2)} + \lambda^2\left(\frac{\zeta''(2)}{\zeta(2)} - \left(\frac{\zeta'(2)}{\zeta(2)}\right)^2\right) = 0.3340\ldots
+$$
+
+(see (@eq-deltakappa)). Our numerical data leads us to "guesstimate" the numerical value of $\kappa$ to be somewhere around $-0.1$.
+
+Naturally, $Y$ and $Y_1$ are asymptotically normal as well, and analogously to (@eq-ExpEquiv_a) (another exercise for the reader), we have
+
+$$
+\begin{aligned}
+ \mathrm{Var}[Y] = \mathrm{Var}[X] + {\textstyle \frac{1}{4}} + O\left(N^{-1}(\log N)^2\right) \quad \text{and} \quad
+ \mathrm{Var}[Y_1] = \mathrm{Var}[X_1] + {\textstyle \frac{1}{4}} + O\left(N^{-1}(\log N)^2\right).
+\end{aligned}
+$$ {#eq-varequiv}
+
