@@ -37,9 +37,6 @@ _freeze/
 site_libs/
 **/*.quarto_ipynb
 
-# --- Rendered site output (published to GitHub Pages by CI) ---
-/docs/
-
 # --- Media (regenerable animations; GIFs/PNGs are kept, .mp4 is not) ---
 *.mp4
 
