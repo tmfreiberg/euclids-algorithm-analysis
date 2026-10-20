@@ -66,7 +66,7 @@ def gcd_steps(a,b,i): # Input i = 0
     return gcd_steps(b,a%b,i)
 ```
 
-The source defines several further variants: `rem` for the remainder sequence $[r_0,r_1,\ldots,r_n]$, `quot_rem` for the quotients and remainders together, and `write_euclid`, which writes out the whole computation. See `src/euclid_analysis/algorithms.py`.
+The source defines several further variants: `remainders` for the remainder sequence $[r_0,r_1,\ldots,r_n]$, `quotients_remainders` for the quotients and remainders together, and `write_euclid`, which writes out the whole computation. See `src/euclid_analysis/algorithms.py`.
 
 As a side-note, the definition of gcd extends in an obvious way to gcd of an $n$-tuple of integers, $n \ge 2$. Namely, $\gcd(a_1,...,a_n)$ is the unique nonnegative integer with the following property. For any integer $d$, $d$ divides every $a_i$ if and only if $d$ divides $\gcd(a_1,...,a_n)$. Thus, $\gcd(a_1,...,a_n) = \gcd(a_1,gcd(a_2,...,a_n))$, and we can use recursion to compute the gcd of an $n$-tuple, which is what our function `gcdn` does.
 
