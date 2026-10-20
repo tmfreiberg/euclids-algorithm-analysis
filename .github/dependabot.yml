@@ -1,0 +1,19 @@
+# Dependency updates as pull requests, grouped, once a month. uv.lock is
+# committed, so the uv ecosystem updates the lock itself. Security updates,
+# when enabled in the repository settings, still come at once.
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      python:
+        patterns: ["*"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      actions:
+        patterns: ["*"]
