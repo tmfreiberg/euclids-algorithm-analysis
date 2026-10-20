@@ -28,3 +28,8 @@
 # --- GitHub language statistics: keep the data/ CSVs from skewing the repo's
 #     reported language breakdown, and mark generated docs as such. ---
 data/*.csv linguist-generated
+
+# --- Stored exactly as committed. This table went into history with CRLF
+#     endings; "-text" stops Git converting it, so it never shows as modified
+#     on a machine that rechecks it, and history gains no second copy. ---
+data/gcd_pairs_100001df.csv -text
