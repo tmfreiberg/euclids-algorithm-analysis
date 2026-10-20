@@ -42,10 +42,13 @@ dev = [
     "pytest-cov>=4.1",
     "ruff>=0.1",
     "mypy>=1.5",
-    "jupyter>=1.1.1",
-    "ipykernel>=7.3.0",
-    "nbformat>=5.11.1",
-    "nbclient>=0.11.0",
+]
+# What Quarto's Jupyter engine needs to execute the book's code cells.
+docs = [
+    "ipykernel>=6.0",
+    "nbclient>=0.10",
+    "nbformat>=5.10",
+    "pyyaml>=6.0",
 ]
 
 [project.urls]
@@ -83,9 +86,15 @@ ignore = ["D203", "D213", "N802", "N803", "N806", "N811", "N812"]
 convention = "numpy"
 
 [tool.mypy]
-python_version = "3.12"
-packages = ["euclid_analysis"]
+# Checked as source files, so a bare "mypy" works with an editable install,
+# and at the version of whichever interpreter runs it (CI runs each one).
+files = ["src/euclid_analysis"]
 ignore_missing_imports = true
+
+[tool.deptry]
+known_first_party = ["euclid_analysis"]
+# The extras hold tools (test, lint, book rendering), not imports.
+optional_dependencies_dev_groups = ["dev", "docs"]
 
 [project.scripts]
 euclid-analysis = "euclid_analysis.cli:main"

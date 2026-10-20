@@ -19,7 +19,7 @@ suite, the precomputed data and figures, and the sources for that book.
 
 Install it with **pip** — `pip install -e .` for the library, `-e ".[dev]"` to
 add the test and lint tools (pytest, ruff, mypy), or `-e ".[dev,docs]"` to also
-pull the Jupyter stack that builds the book. A **conda** `environment.yml` is
+pull the notebook tools that build the book. A **conda** `environment.yml` is
 also provided (and bundles Quarto). See [Installation](#installation) below.
 
 ## What's here
@@ -71,7 +71,7 @@ Pick the extras you need:
 | --- | --- |
 | `pip install -e .` | the `euclid_analysis` library only |
 | `pip install -e ".[dev]"` | library **+ dev tools** (pytest, pytest-cov, ruff, mypy) |
-| `pip install -e ".[docs]"` | library **+ book toolchain** (Jupyter, ipykernel, pyyaml) |
+| `pip install -e ".[docs]"` | library **+ book toolchain** (ipykernel, nbclient, nbformat, PyYAML) |
 | `pip install -e ".[dev,docs]"` | everything, for running tests *and* building the book |
 
 Requires Python ≥ 3.10; the scientific stack (`numpy`, `pandas`, `scipy`,

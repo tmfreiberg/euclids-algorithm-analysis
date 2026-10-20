@@ -347,9 +347,9 @@ def cmd_sign_summary(a: argparse.Namespace) -> int:
     except (KeyError, FileNotFoundError) as exc:
         return _fail(str(exc))
     summ = analysis.sign_summary(analysis.porter_error_series(meta))
-    n = max(summ["pos"])  # number of sign-bearing a (E(a) nonzero)
+    n = len(summ["pos"]) - 1  # the largest a; the lists are indexed by a
     print(f"Porter error sign summary (dataset {a.dataset}):")
-    print(f"  sign-bearing a (E(a) nonzero) : {n}")
+    print(f"  a from 1 to {n}")
     print(f"  positive : {summ['pos'][n]} ({100 * summ['prop_pos'][n]:.2f}%)")
     print(f"  negative : {summ['neg'][n]} ({100 * summ['prop_neg'][n]:.2f}%)")
     print(f"  final signed sum (pos - neg walk) : {summ['sum_sign'][-1]}")
