@@ -198,7 +198,10 @@ def test_champions(capsys, dataset_H1):
 def test_sign_summary(capsys, dataset_H1):
     code, out, _ = run(capsys, "sign-summary")
     assert code == 0
-    assert "positive" in out
+    assert "a from 1 to 10000" in out
+    assert "positive : 5064 (50.64%)" in out
+    assert "negative : 4936 (49.36%)" in out
+    assert out.rstrip().endswith(": 128")
 
 
 def test_fit_constants(capsys, dataset_B, dataset_C):
