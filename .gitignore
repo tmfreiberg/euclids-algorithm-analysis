@@ -1,23 +1,24 @@
-# --- Python ---
+# ---- Python ----
 __pycache__/
 *.py[cod]
 *$py.class
 *.egg-info/
 .eggs/
+*.egg
 build/
 dist/
 .installed.cfg
-*.egg
 pip-wheel-metadata/
+.env
 
-# --- Virtual environments ---
+# ---- Virtual environments ----
 .venv/
 venv/
 env/
 ENV/
 .conda/
 
-# --- Testing / typing / linting caches ---
+# ---- Testing, typing and linting caches ----
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -26,30 +27,59 @@ ENV/
 htmlcov/
 coverage.xml
 
-# --- Jupyter ---
+# ---- Jupyter ----
 .ipynb_checkpoints/
 *.ipynb_convert*
 
-# --- Quarto ---
-.quarto/
+# ---- Quarto ----
+# Rendered output and caches. _freeze/ is ignored here; a project that
+# commits it on purpose (so CI can render without executing) drops that
+# line. An ignored _freeze/ is regenerable only by executing the notebooks.
 _book/
+_site/
+.quarto/
 _freeze/
+# Quarto's intermediate notebooks, chapter.quarto_ipynb_1 included. Quarto
+# appends its own "**/*.quarto_ipynb" line on render; leave it at the end.
+*.quarto_ipynb*
+# Support files of a page rendered on its own rather than as part of the book.
 site_libs/
-**/*.quarto_ipynb
 
-# --- Media (regenerable animations; GIFs/PNGs are kept, .mp4 is not) ---
+# ---- Media ----
+# Animations are kept as GIFs in images/; video renders are regenerable.
 *.mp4
 
-# --- OS / editor cruft ---
+# ---- Local working material ----
+# Working material kept beside the project, excluded from version control
+# by this file (not by .git/info/exclude).
+excluded/
+
+# ---- Local notes ----
+# A separate local repository, not part of this project.
+/euclids-algorithm-analysis-private/
+# Backstop: if a note lands here by mistake, git will not take it.
+/handoff.txt
+/backlog.txt
+/backup.txt
+/devnotes.txt
+
+# ---- Update zips ----
+# Temporary archives, extracted in place and then deleted.
+/*-update-*.zip
+
+# ---- Office lock files ----
+~$*
+
+# ---- OS and editors ----
 .DS_Store
 Thumbs.db
+desktop.ini
 *.swp
 .idea/
 .vscode/
-/.quarto/
 
-# ---- Local working material ----
-# Scratch space, drafts, and reference material kept alongside the project but
-# deliberately outside version control. Contents vary by repo and are not
-# reproducible from history -- they're covered by file-level backup instead.
-excluded/
+# ---- Quarto's own lines ----
+# Quarto appends these two on render whenever they are missing, so they
+# stay here, at the end, though the Quarto block above covers both.
+/.quarto/
+**/*.quarto_ipynb
