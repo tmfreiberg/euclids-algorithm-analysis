@@ -1,10 +1,27 @@
 name: Tests
 
+# Runs on every pull request (Dependabot's included) and on every push to
+# main. Everything installs from uv.lock, so a pull request that changes the
+# lock is tested with exactly what it would merge.
+#
+#   test   the gate (ruff, mypy, pytest) on each supported Python
+#   audit  pip-audit over every locked package, the extras included
+#   book   renders the book the way publish.yml does, and fails on any
+#          Quarto warning (Quarto itself exits 0 on an unresolved reference)
+
 on:
-  push:
-    branches: [main, rebuild]
   pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # The one Quarto version for this workflow and publish.yml; change both
+  # together, in a pull request, so the book job renders it before a deploy.
+  QUARTO_VERSION: "1.10.19"
 
 jobs:
   test:
@@ -14,21 +31,48 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install from the lock
+        run: uv sync --locked --extra dev
+      - name: Lint (ruff)
+        run: uv run --locked ruff check src tests
+      - name: Type-check (mypy)
+        run: uv run --locked mypy
+      - name: Test (pytest)
+        run: uv run --locked pytest -q
 
-      - name: Install the package with dev extras
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Export the locked packages
+        run: uv export --locked --all-extras --no-emit-project -q -o requirements-audit.txt
+      - name: Audit them (pip-audit)
+        run: uvx pip-audit -r requirements-audit.txt --disable-pip --progress-spinner off
+
+  book:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Install from the lock
+        run: uv sync --locked --extra docs
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: ${{ env.QUARTO_VERSION }}
+      - name: Render the book; fail on any warning
+        shell: bash
+        env:
+          QUARTO_PYTHON: ${{ github.workspace }}/.venv/bin/python
         run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-
-      - name: Lint with ruff
-        run: ruff check src tests
-
-      - name: Run the test suite
-        run: pytest -ra
+          quarto render --to html 2>&1 | tee render.log
+          if grep -q 'WARN:' render.log; then
+            echo "::error::Quarto reported warnings (see the WARN: lines above)"
+            exit 1
+          fi

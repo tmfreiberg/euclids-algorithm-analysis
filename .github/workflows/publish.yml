@@ -3,6 +3,8 @@ name: Publish Quarto book
 # Build the Quarto book and deploy it to GitHub Pages on every push to main.
 # The book imports the `euclid_analysis` package and executes the fast code
 # cells; the slow animations are embedded as precomputed images from images/.
+# The build installs from uv.lock and renders exactly as the book job in
+# tests.yml does, with the same pinned Quarto.
 
 on:
   push:
@@ -20,6 +22,10 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  # Keep in step with QUARTO_VERSION in tests.yml.
+  QUARTO_VERSION: "1.10.19"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,22 +33,29 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
 
-      - name: Install the package and notebook dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .
-          pip install jupyter nbclient ipykernel
+      - name: Install the package and the book's notebook tools from the lock
+        run: uv sync --locked --extra docs
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: ${{ env.QUARTO_VERSION }}
 
-      - name: Render the book
-        uses: quarto-dev/quarto-actions/render@v2
+      - name: Render the book; fail on any warning
+        shell: bash
+        env:
+          QUARTO_PYTHON: ${{ github.workspace }}/.venv/bin/python
+        run: |
+          quarto render --to html 2>&1 | tee render.log
+          if grep -q 'WARN:' render.log; then
+            echo "::error::Quarto reported warnings (see the WARN: lines above)"
+            exit 1
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
