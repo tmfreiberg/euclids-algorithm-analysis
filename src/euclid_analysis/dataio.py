@@ -42,8 +42,8 @@ DATA_DIR: Path = Path(__file__).resolve().parents[2] / "data"
 #: Human-readable dataset names mapped to their CSV file names.  The keys are
 #: the identifiers used throughout the exposition (``B`` and ``C`` are the
 #: two-dimensional coprime/all step-count tables; ``H1`` and ``H`` are the
-#: one-dimensional coprime/all tables; ``A`` is the large gcd-pair table, which
-#: is not shipped because of its size).
+#: one-dimensional coprime/all tables; ``A`` is the large gcd-pair table, about
+#: 11 MB, which is shipped but needed by neither the book nor the tests).
 DATASETS: dict[str, str] = {
     "B": "euclid_steps_coprime_100001df.csv",
     "C": "euclid_steps_100001df.csv",
@@ -137,8 +137,8 @@ def load_dataset(name: str, *, drop_zeros: bool = True) -> MetaDict:
     KeyError
         If ``name`` is not a known dataset.
     FileNotFoundError
-        If the dataset is known but its file is absent (for example the large
-        ``"A"`` gcd-pair table, which is not shipped with the repository).
+        If the dataset is known but its file is absent (for example in a copy
+        of the package installed without the repository's ``data`` folder).
     """
     if name not in DATASETS:
         raise KeyError(

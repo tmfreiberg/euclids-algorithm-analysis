@@ -44,10 +44,10 @@ class TestLoadDataset:
         with pytest.raises(KeyError):
             dataio.load_dataset("does-not-exist")
 
-    def test_missing_file_raises_filenotfound(self):
-        # 'A' (the large gcd-pair table) is not shipped with the repository.
-        if (dataio.DATA_DIR / dataio.DATASETS["A"]).exists():
-            pytest.skip("dataset 'A' unexpectedly present")
+    def test_missing_file_raises_filenotfound(self, monkeypatch, tmp_path):
+        # Point the data folder somewhere empty, so the test does not depend
+        # on which tables happen to be shipped.
+        monkeypatch.setattr(dataio, "DATA_DIR", tmp_path)
         with pytest.raises(FileNotFoundError):
             dataio.load_dataset("A")
 
