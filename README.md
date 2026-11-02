@@ -74,7 +74,7 @@ Pick the extras you need:
 | `pip install -e ".[docs]"` | library **+ book toolchain** (ipykernel, nbclient, nbformat, PyYAML) |
 | `pip install -e ".[dev,docs]"` | everything, for running tests *and* building the book |
 
-Requires Python ≥ 3.10; the scientific stack (`numpy`, `pandas`, `scipy`,
+Requires Python ≥ 3.11; the scientific stack (`numpy`, `pandas`, `scipy`,
 `matplotlib`) is installed automatically.
 
 ### With conda
